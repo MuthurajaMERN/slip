@@ -81,17 +81,17 @@ function App() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { key: "employeeName", type: "text" },
-            { key: "employeeID", type: "text" },
-            { key: "designation", type: "text" },
-            { key: "dateOfJoining", type: "date" },
-            { key: "payPeriod", type: "date" },
-            { key: "payDate", type: "date" },
-            { key: "pfAccountNumber", type: "text" },
-            { key: "uanNumber", type: "text" },
-            { key: "pannumber", type: "text" },
-            { key: "leavetaken", type: "text" },
-            { key: "totalworkingDays", type: "text" }
+            { key: "EmployeeName", type: "text" },
+            { key: "EmployeeID", type: "text" },
+            { key: "Designation", type: "text" },
+            { key: "DateOfJoining", type: "date" },
+            { key: "PayPeriod", type: "date" },
+            { key: "PayDate", type: "date" },
+            { key: "PfAccountNumber", type: "text" },
+            { key: "UanNumber", type: "text" },
+            { key: "PanNumber", type: "text" },
+            { key: "Leavetaken", type: "text" },
+            { key: "TotalworkingDays", type: "text" }
           ].map((field) => (
             <div key={field.key} className="mb-4">
               <label className="block text-sm font-medium text-gray-700">{field.key}</label>
@@ -136,7 +136,8 @@ function App() {
       </div>
 
       <div className="text-left mt-44 ml-10">
-        <h1 className="text-2xl font-bold">UltraFly Solutions</h1>
+      <img src="/assets/solution.png" alt="Logo" className="w-full h-auto" />
+      <h1 className="text-2xl font-bold"><span className='text-blue-600'>UltraFly</span><span className='text-yellow-600'>Solutions</span></h1>
         <p>No.27/9, NivedhVikas, 3rdFloor, Pankaja Mill Road, Puliakulam, Coimbatore-641045</p>
       </div>
 
@@ -146,7 +147,7 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Employee Details (Left Side) */}
           <div className="col-span-2 bg-white p-8 shadow-lg rounded-lg w-full">
-            <h2 className="text-xl font-semibold mb-6">Employee Details</h2>
+            <h2 className="text-xl font-semibold mb-3"><span className='text-lg ml-10'>Employee Details</span></h2>
             <div className="space-y-5">
               {[
                 { label: "Employee Name", key: "employeeName" },
