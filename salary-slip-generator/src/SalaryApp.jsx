@@ -136,10 +136,13 @@ function App() {
       </div>
 
       <div className="text-left mt-44 ml-10">
-      <img src="/assets/solution.png" alt="Logo" className="w-full h-auto" />
-      <h1 className="text-2xl font-bold"><span className='text-blue-600'>UltraFly</span><span className='text-yellow-600'>Solutions</span></h1>
-        <p>No.27/9, NivedhVikas, 3rdFloor, Pankaja Mill Road, Puliakulam, Coimbatore-641045</p>
-      </div>
+  <img src="src/assets/solution.png" alt="Logo" className="w-25% h-24 justify-center" />
+  <h1 className="text-2xl font-bold">
+    <span className="text-blue-600">UltraFly</span>
+    <span className="text-yellow-600">Solutions</span>
+  </h1>
+  <p>No.27/9, NivedhVikas, 3rd Floor, Pankaja Mill Road, Puliakulam, Coimbatore-641045</p>
+</div>
 
       <hr className="my-8" />
 
