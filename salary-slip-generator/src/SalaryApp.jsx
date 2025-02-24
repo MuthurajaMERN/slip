@@ -31,26 +31,39 @@ function App() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEmployeeDetails({
-      ...employeeDetails,
+    setEmployeeDetails((prevState) => ({
+      ...prevState,
       [name]: value
-    });
+    }))
   };
 
   const calculateSalary = () => {
-    const basicSalary = parseFloat(employeeDetails.basicSalary);
-    const hra = (basicSalary * employeeDetails.hraPercentage) / 100;
-    const conveyanceAllowance = (basicSalary * employeeDetails.conveyanceAllowancePercentage) / 100;
-    const childrenEducationAllowance = (basicSalary * employeeDetails.childrenEducationAllowancePercentage) / 100;
-    const dearnessAllowance = (basicSalary * employeeDetails.dearnessAllowancePercentage) / 100;
-    const otherAllowance = (basicSalary * employeeDetails.otherAllowancePercentage) / 100;
-    const epfContribution = (basicSalary * employeeDetails.epfContributionPercentage) / 100;
-    const incomeTax = (basicSalary * employeeDetails.incomeTaxPercentage) / 100;
-    const telephoneReimbursement = (basicSalary * employeeDetails.telephoneReimbursementPercentage) / 100;
-    const fuelReimbursement = (basicSalary * employeeDetails.fuelReimbursementPercentage) / 100;
-    const esi = (basicSalary * employeeDetails.esiPercentage) / 100;
-    const lop = (basicSalary * employeeDetails.lopPercentage) / 100;
-    const insurance = (basicSalary * employeeDetails.insurancePercentage) / 100;
+    const basicSalary = parseFloat(employeeDetails.basicSalary) || 0;
+    const totalWorkingDays = parseFloat(employeeDetails.TotalworkingDays) || 0;
+    const leaveTaken = parseFloat(employeeDetails.Leavetaken) || 0;
+  
+    const hra = (basicSalary * (parseFloat(employeeDetails.hraPercentage) || 0)) / 100;
+    const conveyanceAllowance = (basicSalary * (parseFloat(employeeDetails.conveyanceAllowancePercentage) || 0)) / 100;
+    const childrenEducationAllowance = (basicSalary * (parseFloat(employeeDetails.childrenEducationAllowancePercentage) || 0)) / 100;
+    const dearnessAllowance = (basicSalary * (parseFloat(employeeDetails.dearnessAllowancePercentage) || 0)) / 100;
+    const otherAllowance = (basicSalary * (parseFloat(employeeDetails.otherAllowancePercentage) || 0)) / 100;
+  
+    const epfContribution = (basicSalary * (parseFloat(employeeDetails.epfContributionPercentage) || 0)) / 100;
+    const incomeTax = (basicSalary * (parseFloat(employeeDetails.incomeTaxPercentage) || 0)) / 100;
+    const telephoneReimbursement = (basicSalary * (parseFloat(employeeDetails.telephoneReimbursementPercentage) || 0)) / 100;
+    const fuelReimbursement = (basicSalary * (parseFloat(employeeDetails.fuelReimbursementPercentage) || 0)) / 100;
+    const esi = (basicSalary * (parseFloat(employeeDetails.esiPercentage) || 0)) / 100;
+    const insurance = (basicSalary * (parseFloat(employeeDetails.insurancePercentage) || 0)) / 100;
+  
+    // ✅ Corrected LOP Calculation
+    const lop = totalWorkingDays > 0 
+    ? Math.round((basicSalary / totalWorkingDays) * leaveTaken) 
+    : 0;  
+    // ✅ Calculate Total Earnings & Deductions
+    const totalEarnings = basicSalary + hra + conveyanceAllowance + childrenEducationAllowance + dearnessAllowance + otherAllowance;
+    const totalDeductions = epfContribution + incomeTax + telephoneReimbursement + fuelReimbursement + esi + lop + insurance;
+  
+    const netSalary = (totalEarnings - totalDeductions).toFixed(2);
 
     return {
       hra,
@@ -65,75 +78,113 @@ function App() {
       esi,
       lop,
       insurance,
-      totalEarnings: basicSalary + hra + conveyanceAllowance + childrenEducationAllowance + dearnessAllowance + otherAllowance,
-      totalDeductions: epfContribution + incomeTax + telephoneReimbursement + fuelReimbursement + esi + lop + insurance,
-      netSalary: basicSalary + hra + conveyanceAllowance + childrenEducationAllowance + dearnessAllowance + otherAllowance - epfContribution - incomeTax - telephoneReimbursement - fuelReimbursement - esi - lop - insurance
+      totalEarnings,
+      totalDeductions,
+      netSalary
     };
   };
+  
 
   const salaryDetails = calculateSalary();
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Employee Payslip Generator</h1>
-      <div className="border p-4 mb-4">
-        <h2 className="text-xl font-semibold mb-2">Employee Details</h2>
+    <h1 className="text-4xl font-extrabold text-center mb-6 bg-gradient-to-r  text-transparent bg-clip-text">
+  <span className="text-blue-400">Employee Payslip</span> <span className="text-yellow-400">Generator</span>  
+</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: "EmployeeName", type: "text" },
-            { key: "EmployeeID", type: "text" },
-            { key: "Designation", type: "text" },
-            { key: "DateOfJoining", type: "date" },
-            { key: "PayPeriod", type: "date" },
-            { key: "PayDate", type: "date" },
-            { key: "PfAccountNumber", type: "text" },
-            { key: "UanNumber", type: "text" },
-            { key: "PanNumber", type: "text" },
-            { key: "Leavetaken", type: "text" },
-            { key: "TotalworkingDays", type: "text" }
-          ].map((field) => (
-            <div key={field.key} className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">{field.key}</label>
-              <input
-                type={field.type}
-                name={field.key}
-                value={employeeDetails[field.key]}
-                onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+<div className="border-2 border-gray-300 p-6 rounded-xl shadow-lg  bg-slate-200">
+  <h2 className="text-2xl font-semibold mb-4 text-indigo-600">Employee Details</h2>
 
-      <div className="border p-4 mb-4">
-        <h2 className="text-xl font-semibold mb-2">Salary Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Basic Salary</label>
-            <input
-              type="number"
-              name="basicSalary"
-              value={employeeDetails.basicSalary}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-          {["hraPercentage", "conveyanceAllowancePercentage", "childrenEducationAllowancePercentage", "dearnessAllowancePercentage", "otherAllowancePercentage", "epfContributionPercentage", "incomeTaxPercentage", "telephoneReimbursementPercentage", "fuelReimbursementPercentage", "esiPercentage", "lopPercentage", "insurancePercentage"].map((key) => (
-            <div key={key} className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">{key}</label>
-              <input
-                type="number"
-                name={key}
-                value={employeeDetails[key]}
-                onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          ))}
-        </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {[
+    { key: "employeeName", type: "text" },
+    { key: "employeeID", type: "text" },
+    { key: "designation", type: "text" },
+    { key: "dateOfJoining", type: "date" },
+    { key: "payPeriod", type: "date" },
+    { key: "payDate", type: "date" },
+    { key: "pfAccountNumber", type: "text" },
+    { key: "uanNumber", type: "text" },
+    { key: "panNumber", type: "text" },
+    { key: "leaveTaken", type: "text" },
+    { key: "totalWorkingDays", type: "text" }
+  ].map((field) => (
+    <div key={field.key} className="flex flex-col">
+      <label className="mb-2 text-sm font-medium text-gray-800">
+        {field.key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()).trim()}
+      </label>
+      <input
+        type={field.type}
+        name={field.key}
+        value={employeeDetails[field.key] || ""}
+        onChange={handleInputChange}
+        className="px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all ease-in-out duration-200"
+      />
+    </div>
+  ))}
+</div>
+  <div className="mt-6 text-center">
+    <button className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all duration-300">
+      Generate Payslip
+    </button>
+  </div>
+</div>
+
+
+<div className="border-2 bg-slate-200 border-gray-300 p-6 mb-6 rounded-xl bg-gray-50 shadow-sm">
+  <h2 className="text-2xl font-semibold mb-4 text-indigo-600">Salary Details</h2>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Basic Salary Input */}
+    <div className="flex flex-col">
+      <label className="mb-2 text-sm font-medium text-gray-800">Basic Pay</label>
+      <input
+        type="number"
+        name="basicSalary"
+        placeholder="Enter Basic Pay"
+        value={employeeDetails.basicSalary}
+        onChange={handleInputChange}
+        className="px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all ease-in-out duration-200 bg-white"
+      />
+    </div>
+
+    {/* Dynamic Fields */}
+    {[
+      { key: "hraPercentage", label: "HRA (%)" },
+      { key: "conveyanceAllowancePercentage", label: "Conveyance (%)" },
+      { key: "childrenEducationAllowancePercentage", label: "Edu Allowance (%)" },
+      { key: "dearnessAllowancePercentage", label: "DA (%)" },
+      { key: "otherAllowancePercentage", label: "Other Allowance (%)" },
+      { key: "epfContributionPercentage", label: "EPF (%)" },
+      { key: "incomeTaxPercentage", label: "Income Tax (%)" },
+      { key: "telephoneReimbursementPercentage", label: "Phone Reimb (%)" },
+      { key: "fuelReimbursementPercentage", label: "Fuel Reimb (%)" },
+      { key: "esiPercentage", label: "ESI (%)" },
+      { key: "lopPercentage", label: "LOP (%)" },
+      { key: "insurancePercentage", label: "Insurance (%)" }
+    ].map(({ key, label }) => (
+      <div key={key} className="flex flex-col">
+        <label className="mb-2 text-sm font-medium text-gray-800">{label}</label>
+        <input
+          type="number"
+          name={key}
+          placeholder={`Enter ${label}`}
+          value={employeeDetails[key]}
+          onChange={handleInputChange}
+          className="px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all ease-in-out duration-200 bg-white"
+        />
       </div>
+    ))}
+  </div>
+
+  <div className="mt-6 text-center">
+    <button className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:from-indigo-600 hover:to-purple-700 transition-all duration-300">
+      Calculate Salary
+    </button>
+  </div>
+</div>
+
 
       <div className="text-left mt-44 ml-10">
   <img src="src/assets/solution.png" alt="Logo" className="w-25% h-24 justify-center" />
@@ -146,7 +197,7 @@ function App() {
 
       <hr className="my-8" />
 
-      <div className="bg-gray-50 p-10 shadow-lg rounded-lg w-full">
+      <div className="bg-gray-400 p-10  rounded-lg w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Employee Details (Left Side) */}
           <div className="col-span-2 bg-white p-8 shadow-lg rounded-lg w-full">
